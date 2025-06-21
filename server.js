@@ -4,6 +4,7 @@ const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -12,7 +13,6 @@ const port = process.env.PORT || 3000;
 const pool = new Pool({
   connectionString: process.env.DB_URL || 'postgres://username:password@localhost:5432/report_db',
   ssl: {
-    ca: fs.readFileSync(path.join(__dirname, 'certs', 'ca.pem')).toString(),
     rejectUnauthorized: true,
   },
 });
