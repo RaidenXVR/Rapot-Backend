@@ -2,17 +2,18 @@ const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
 const { v4: uuidv4 } = require('uuid');
+const fs = require('fs');
+const path = require('path');
 
 const app = express();
 const port = process.env.PORT || 3000;
 
 // Database configuration
 const pool = new Pool({
-  user: process.env.DB_USER || 'postgres',
-  host: process.env.DB_HOST || 'localhost',
-  database: process.env.DB_NAME || 'reports_db',
-  password: process.env.DB_PASSWORD || 'thepassword',
-  port: process.env.DB_PORT || 5432,
+  connectionString: process.env.DB_URL || 'postgres://username:password@localhost:5432/report_db',
+  ssl: {
+    ca: fs.readFileSync(path.join(__dirname, 'certs', 'ca.pem')).toString(),
+  },
 });
 
 // Middleware
@@ -37,6 +38,9 @@ pool.connect((err, client, release) => {
 
 // Routes
 
+app.get('/', (req, res) => {
+  res.json({ message: 'Report API is active', author: "Fitran Alfian Nizar" });
+})
 // Get all schools
 app.get('/api/school-list', async (req, res) => {
   try {
