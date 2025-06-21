@@ -438,6 +438,7 @@ app.post('/api/extras', async (req, res) => {
       await client.query('BEGIN');
 
       const reportId = extras_data[0].report_id;
+      const keptExtraIds = [];
 
       // Get existing extras for this report
       const existingExtras = await client.query('SELECT extra_id FROM extras WHERE report_id = $1', [reportId]);
@@ -451,6 +452,8 @@ app.post('/api/extras', async (req, res) => {
             'UPDATE extras SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE extra_id = $2',
             [extra.name, extra.extra_id]
           );
+          keptExtraIds.push(extra.extra_id);
+
         } else {
           // Insert new extra
           const extraId = extra.extra_id || uuidv4();
@@ -458,15 +461,16 @@ app.post('/api/extras', async (req, res) => {
             'INSERT INTO extras (extra_id, report_id, name) VALUES ($1, $2, $3)',
             [extraId, extra.report_id, extra.name]
           );
+          keptExtraIds.push(extra.extra_id);
+
         }
       }
 
       // Delete extras that are no longer in the data
-      const newExtraIds = extras_data.map(e => e.extra_id).filter(id => id);
-      if (newExtraIds.length > 0) {
+      if (keptExtraIds.length > 0) {
         await client.query(
           'DELETE FROM extras WHERE report_id = $1 AND extra_id NOT IN (' + newExtraIds.map((_, i) => `$${i + 2}`).join(',') + ')',
-          [reportId, ...newExtraIds]
+          [reportId, ...keptExtraIds]
         );
       }
 
