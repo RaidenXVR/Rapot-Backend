@@ -132,17 +132,19 @@ app.post('/api/schools/add-school', async (req, res) => {
   try {
     const {
       npsn,
-      dinasPendidikan,
-      satuanPendidikan,
+      dinas_pendidikan,
+      satuan_pendidikan,
       alamat,
       desa,
       kecamatan,
       kabupaten,
       provinsi,
-      kodePos,
+      kode_pos,
       website,
       email,
-      telp
+      telp,
+      kepala_sekolah,
+      nip_kepala_sekolah
     } = req.body;
 
     // Check if school already exists
@@ -153,21 +155,23 @@ app.post('/api/schools/add-school', async (req, res) => {
 
     await pool.query(
       `INSERT INTO schools (
-        npsn, dinas_pendidikan, satuan_pendidikan, alamat, desa, kecamatan, kabupaten, provinsi, kode_pos, website, email, telp
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)`,
+        npsn, dinas_pendidikan, satuan_pendidikan, alamat, desa, kecamatan, kabupaten, provinsi, kode_pos, website, email, telp, kepala_sekolah, nip_kepala_sekolah
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)`,
       [
         npsn,
-        dinasPendidikan,
-        satuanPendidikan,
+        dinas_pendidikan,
+        satuan_pendidikan,
         alamat,
         desa,
         kecamatan,
         kabupaten,
         provinsi,
-        kodePos,
+        kode_pos,
         website,
         email,
-        telp
+        telp,
+        kepala_sekolah,
+        nip_kepala_sekolah
       ]
     );
 
@@ -182,17 +186,17 @@ app.post('/api/schools/:id/update-school', async (req, res) => {
   try {
     const { id } = req.params;
     const {
-      dinasPendidikan, satuanPendidikan, alamat, desa, kecamatan,
-      kabupaten, provinsi, kodePos, website, email, telp
+      dinas_pendidikan, satuan_pendidikan, alamat, desa, kecamatan,
+      kabupaten, provinsi, kode_pos, website, email, telp, kepala_sekolah, nip_kepala_sekolah
     } = req.body;
 
     await pool.query(`
       UPDATE schools SET 
         dinas_pendidikan = $1, satuan_pendidikan = $2, alamat = $3, desa = $4,
         kecamatan = $5, kabupaten = $6, provinsi = $7, kode_pos = $8,
-        website = $9, email = $10, telp = $11, updated_at = CURRENT_TIMESTAMP
-      WHERE npsn = $12
-    `, [dinasPendidikan, satuanPendidikan, alamat, desa, kecamatan, kabupaten, provinsi, kodePos, website, email, telp, id]);
+        website = $9, email = $10, telp = $11, kepala_sekolah = $12, nip_kepala_sekolah = $13, updated_at = CURRENT_TIMESTAMP
+      WHERE npsn = $14
+    `, [dinas_pendidikan, satuan_pendidikan, alamat, desa, kecamatan, kabupaten, provinsi, kode_pos, website, email, telp, kepala_sekolah, nip_kepala_sekolah, id]);
 
     res.json({ status: 200 });
   } catch (error) {
