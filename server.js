@@ -469,7 +469,7 @@ app.post('/api/extras', async (req, res) => {
       // Delete extras that are no longer in the data
       if (keptExtraIds.length > 0) {
         await client.query(
-          'DELETE FROM extras WHERE report_id = $1 AND extra_id NOT IN (' + newExtraIds.map((_, i) => `$${i + 2}`).join(',') + ')',
+          'DELETE FROM extras WHERE report_id = $1 AND extra_id NOT IN (' + keptExtraIds.map((_, i) => `$${i + 2}`).join(',') + ')',
           [reportId, ...keptExtraIds]
         );
       }
