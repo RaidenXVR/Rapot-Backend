@@ -13,6 +13,7 @@ const pool = new Pool({
   connectionString: process.env.DB_URL || 'postgres://username:password@localhost:5432/report_db',
   ssl: {
     ca: fs.readFileSync(path.join(__dirname, 'certs', 'ca.pem')).toString(),
+    rejectUnauthorized: true,
   },
 });
 
